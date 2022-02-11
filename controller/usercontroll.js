@@ -1,7 +1,6 @@
-import { collection, doc, getDocs, updateDoc,} from "firebase/firestore/lite";
+import { collection, deleteDoc, deleteField, doc, getDoc, getDocs, updateDoc,} from "firebase/firestore/lite";
 import db from "../config.js";
 import Users from "../model/users.js";
-
 
 export const Adduser =async (req,res)=>{
     const {name,Umur} = req.body;
@@ -16,7 +15,7 @@ export const getAlldata = async (req,res)=>{
     data.forEach((doc)=>{
         user.push(doc.id,doc.data())
     })
-    res.json({user});
+    res.json(user);
 }
 
 export const updateData=async (req,res)=>{
@@ -32,5 +31,26 @@ export const updateData=async (req,res)=>{
     } catch (error) {
         console.log(error)
         res.json({msg : "fail update"})
+    }
+};
+
+export const GetDataByID= async(req,res)=>{
+    try {
+        const id = req.params.id
+        const data = (await getDoc(doc(db,"USERS",id))).data()
+        res.json(data)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const DeletByid = async(req,res)=>{
+    try {
+        const id = req.params.id;
+        const data = doc(db,"USERS",id)
+        await deleteDoc(data)
+        res.json(data)
+    } catch (error) {
+        console.log(error)
     }
 }
